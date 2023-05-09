@@ -83,6 +83,24 @@ wsServer.on("request", (request) => {
         boards[boardId].acquired_by = null;
       }
     }
+
+    if (result.method === "timeout") {
+      const userId = result.userId;
+      const boardId = result.boardId;
+
+      boards[boardId].acquired_by = null;
+
+      updateBoardState();
+
+      const payload = {
+        method: "timeout",
+        board: boards[boardId],
+        userId: userId,
+      };
+
+      const con = users[userId].connection;
+      con.send(JSON.stringify(payload));
+    }
   });
 
   // generate new client id

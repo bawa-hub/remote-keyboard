@@ -82,6 +82,7 @@
         let userId = null;
         let myColor = null;
         let boardId = null;
+        var btnTimer;
 
         let ws = new WebSocket("ws://localhost:4000");
         const controlBtn = document.getElementById('controlBtn');
@@ -103,7 +104,6 @@
 
             if (response.method === 'connect') {
                 userId = response.userId;
-                console.log("User id set successfully", userId);
 
                 const payload = {
                     'method': 'create',
@@ -128,10 +128,13 @@
                     if (user.userId === userId) myColor = user.color
                 })
 
+                btnTimer = window.setTimeout(notClicked, 120000);
+
                 for (let i = 1; i <= 10; i++) {
                     const b = document.getElementById(`box${i}`)
                     b.addEventListener('click', e => {
                         if (board.acquired_by === userId) {
+
                             if (b.style.backgroundColor && !(b.style.backgroundColor === 'white')) {
                                 color = 'white';
                             } else {
@@ -149,6 +152,7 @@
                         } else {
                             console.log("some has already acquired")
                         }
+                        clicked();
                     })
                 }
             }
@@ -160,6 +164,10 @@
                     const box = document.getElementById("box" + b)
                     box.style.backgroundColor = color
                 }
+                updateStatusText(response.board, userId)
+            }
+
+            if (response.method === 'timeout') {
                 updateStatusText(response.board, userId)
             }
         };
@@ -177,7 +185,20 @@
             }
         }
 
+        // timer
+        function notClicked() {
+            const payload = {
+                'method': 'timeout',
+                'userId': userId,
+                'boardId': boardId
+            }
 
+            ws.send(JSON.stringify(payload));
+        }
+
+        function clicked() {
+            clearTimeout(btnTimer);
+        }
     </script>
 
 </body>
