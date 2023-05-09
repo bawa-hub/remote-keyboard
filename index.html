@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Remote Keyboard</title>
 
     <style>
         * {
@@ -87,7 +87,7 @@
         const controlBtn = document.getElementById('controlBtn');
 
         controlBtn.addEventListener('click', e => {
-            console.log("from controll btn ");
+
             if (boardId == null) boardId = '1';
             const payload = {
                 'method': 'control',
@@ -115,13 +115,12 @@
 
             if (response.method === 'create') {
                 boardId = response.board.id;
-                console.log("board from create", response.board);
+
                 updateStatusText(response.board, userId)
             }
 
             if (response.method === 'control') {
                 const board = response.board;
-                console.log("from control board", response.board)
 
                 updateStatusText(board, userId)
 

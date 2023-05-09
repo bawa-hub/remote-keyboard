@@ -20,7 +20,6 @@ wsServer.on("request", (request) => {
   connection.on("open", () => console.log("connection opened!"));
   connection.on("close", () => console.log("connection closed!"));
   connection.on("message", (message) => {
-    // received message from client
     const result = JSON.parse(message.utf8Data);
 
     if (result.method === "create") {
@@ -47,11 +46,6 @@ wsServer.on("request", (request) => {
       const board = boards[boardId];
 
       console.log("board from control event js file", board);
-
-      //   if (board.users.length >= 2) {
-      //     // sorry max player reached
-      //     return;
-      //   }
 
       updateBoardState();
 
@@ -82,10 +76,6 @@ wsServer.on("request", (request) => {
       const boardId = result.boardId;
       const key = result.key;
       const color = result.color;
-
-      console.log("from click method server");
-
-      //   console.log("state", boards[boardId]);
 
       if (boards[boardId].acquired_by === userId) {
         let state = boards[boardId]?.state;
