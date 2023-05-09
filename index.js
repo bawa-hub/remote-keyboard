@@ -45,13 +45,11 @@ wsServer.on("request", (request) => {
       const boardId = result.boardId;
       const board = boards[boardId];
 
-      console.log("board from control event js file", board);
-
       updateBoardState();
 
       const color = { 0: "Yellow", 1: "Red" }[board.users.length];
+
       const user = board.users.find((user) => user.userId === userId);
-      console.log("user from control server", user);
       if (!user) {
         board.users.push({
           userId: userId,
