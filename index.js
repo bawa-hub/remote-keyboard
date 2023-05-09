@@ -28,7 +28,6 @@ wsServer.on("request", (request) => {
       const boardId = "1";
       boards[boardId] = {
         id: boardId,
-        keys: 10,
         users: [],
         acquired_by: null,
       };
@@ -47,13 +46,24 @@ wsServer.on("request", (request) => {
       const boardId = result.boardId;
       const board = boards[boardId];
 
+      console.log("board from control event js file", board);
+
+      //   if (board.users.length >= 2) {
+      //     // sorry max player reached
+      //     return;
+      //   }
+
       updateBoardState();
 
       const color = { 0: "Yellow", 1: "Red" }[board.users.length];
-      board.users.push({
-        userId: userId,
-        color: color,
-      });
+      const user = board.users.find((user) => user.userId === userId);
+      console.log("user from control server", user);
+      if (!user) {
+        board.users.push({
+          userId: userId,
+          color: color,
+        });
+      }
 
       if (board.acquired_by == null) board.acquired_by = userId;
 
@@ -68,16 +78,22 @@ wsServer.on("request", (request) => {
     }
 
     if (result.method === "click") {
+      const userId = result.userId;
       const boardId = result.boardId;
       const key = result.key;
       const color = result.color;
 
+      console.log("from click method server");
+
       //   console.log("state", boards[boardId]);
 
-      let state = boards[boardId]?.state;
-      if (!state) state = {};
-      state[key] = color;
-      boards[boardId].state = state;
+      if (boards[boardId].acquired_by === userId) {
+        let state = boards[boardId]?.state;
+        if (!state) state = {};
+        state[key] = color;
+        boards[boardId].state = state;
+        boards[boardId].acquired_by = null;
+      }
     }
   });
 

@@ -87,6 +87,7 @@
         const controlBtn = document.getElementById('controlBtn');
 
         controlBtn.addEventListener('click', e => {
+            console.log("from controll btn ");
             if (boardId == null) boardId = '1';
             const payload = {
                 'method': 'control',
@@ -114,22 +115,13 @@
 
             if (response.method === 'create') {
                 boardId = response.board.id;
-                // console.log("Keyboard successfully created with id " + response.board.id + " with keys " + response.board.keys);
-                const d = document.getElementById('status-text');
-                if (response.board.acquired_by == null) {
-                    d.innerHTML = "No user has control now"
-                } else {
-                    if (response.board.acquired_by === userId) {
-                        d.innerHTML = "Under my control"
-                    } else {
-                        d.innerHTML = "Under someone's control"
-                    }
-                }
+                console.log("board from create", response.board);
+                updateStatusText(response.board, userId)
             }
 
             if (response.method === 'control') {
                 const board = response.board;
-                console.log("board", response.board)
+                console.log("from control board", response.board)
 
                 updateStatusText(board, userId)
 
@@ -156,8 +148,7 @@
 
                             ws.send(JSON.stringify(payload))
                         } else {
-                            alert("some has already acquired")
-                            // console.log("some has already acquired")
+                            console.log("some has already acquired")
                         }
                     })
                 }
